@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Program Results</title>
+  <link rel="stylesheet" href="Styles/General.css" />
+  <link rel="stylesheet" href="Styles/Navigation.css" />
+  <link rel="stylesheet" href="Styles/Results.css" />
+</head>
+<body>
+  <div class="screen" id="results">
+    <div class="container">
+      <button class="back-btn" onclick="window.location.replace('FormPage.html')">← Back to Form</button>
+
+      <div class="results-header">
+        <h2>Your Program Matches</h2>
+        <p>Here are the programs that match your profile.</p>
+      </div>
+
+      <div class="results-container" id="resultsContainer"></div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const container = document.getElementById("resultsContainer");
+      const raw = localStorage.getItem("uniResults");
+
+      if (!raw) {
+        container.innerHTML = "<p style='color:white'>No results found.</p>";
+        return;
+      }
+
+      let parsed;
+      try {
+        parsed = JSON.parse(raw);
+      } catch (err) {
+        container.innerHTML = "<p style='color:white'>Error parsing results.</p>";
+        return;
+      }
+
+      const results = parsed.results || [];
+      if (results.length === 0) {
+        container.innerHTML = "<p style='color:white'>No matches returned.</p>";
+        return;
+      }
+
+      results.forEach(entry => {
+        const tuition = entry.details.tuition || "N/A";
+        const scholarships = entry.details.scholarships || "N/A";
+
+        const card = document.createElement("div");
+        card.className = "university-card";
+        card.innerHTML = \`
+          <div class="university-header">
+            <div class="university-logo">\${entry.university[0]}</div>
+            <div class="university-info">
+              <h3>\${entry.university}</h3>
+              <p>\${entry.program} (Cutoff: \${entry.estimated_cutoff}%)</p>
+            </div>
+          </div>
+          <div class="details-section tuition-info"><strong>Tuition:</strong> \${tuition}</div>
+          <div class="details-section"><strong>Scholarships:</strong> \${scholarships}</div>
+          <div class="pros-cons">
+            <div class="pros"><h5>Pros</h5><ul>\${
+              (entry.details.pros || []).map(p => `<li>\${p.point}</li>`).join("")
+            }</ul></div>
+            <div class="cons"><h5>Cons</h5><ul>\${
+              (entry.details.cons || []).map(c => `<li>\${c.point}</li>`).join("")
+            }</ul></div>
+          </div>\`;
+        container.appendChild(card);
+      });
+    });
+  </script>
+</body>
+</html>

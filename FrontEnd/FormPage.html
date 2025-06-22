@@ -1,0 +1,98 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>UniQuest – Find Your Path</title>
+      <link rel="stylesheet" href="Styles/General.css">
+      <link rel="stylesheet" href="Styles/Navigation.css">
+      <link rel="stylesheet" href="Styles/Form.css">
+      <script src="JavaScript/redirect.js" defer></script>
+    </head>
+    <body>
+
+    <div class="screen" id="form">
+      <div class="container">
+        <nav class="nav">
+            <div class="logo">UniQuest</div>
+            <div class="nav-links">
+                <a onclick="showScreen('LandingPage.html')">Home</a>
+                <a onclick="showScreen('FormPage.html')">Get Started</a>
+            </div>
+        </nav>
+
+        <div class="form-container">
+          <div class="form-header">
+            <h2>Tell Us About Yourself</h2>
+            <p>We’ll match you with Ontario programs you qualify for.</p>
+          </div>
+
+          <form id="studentForm">
+            <!-- Program of Interest -->
+            <div class="form-section">
+              <h3>Program of Interest</h3>
+              <div class="form-group">
+                <label for="interest">Program / Field</label>
+                <input type="text" id="interest" name="interest" placeholder="e.g., Software Engineering" required>
+              </div>
+            </div>
+
+            <!-- Academic Information -->
+            <div class="form-section">
+              <h3>Academic Information</h3>
+              <div class="form-group">
+                <label for="graduationYear">Expected Graduation Year</label>
+                <select id="graduationYear" name="graduationYear" required>
+                  <option value="">Select Year</option>
+                  <option value="2025">2025</option>
+                  <option value="2026">2026</option>
+                  <option value="2027">2027</option>
+                  <option value="2028">2028</option>
+                </select>
+              </div>
+
+              <!-- Grade Inputs -->
+              <div class="grade-grid">
+                <!-- 6 course rows -->
+                <div class="form-group">
+  <label for="Course1Name">Course:</label>
+  <input type="text" id="Course1Name" name="Course1Name" placeholder="Course Name" required>
+  <input type="text" id="Course1Grade" name="Course1Grade" placeholder="e.g., 85%%">
+</div>
+<div class="form-group">
+  <label for="Course2Name">Course:</label>
+  <input type="text" id="Course2Name" name="Course2Name" placeholder="Course Name" required>
+  <input type="text" id="Course2Grade" name="Course2Grade" placeholder="e.g., 85%%">
+</div>
+<div class="form-group">
+  <label for="Course3Name">Course:</label>
+  <input type="text" id="Course3Name" name="Course3Name" placeholder="Course Name" required>
+  <input type="text" id="Course3Grade" name="Course3Grade" placeholder="e.g., 85%%">
+</div>
+<div class="form-group">
+  <label for="Course4Name">Course:</label>
+  <input type="text" id="Course4Name" name="Course4Name" placeholder="Course Name" required>
+  <input type="text" id="Course4Grade" name="Course4Grade" placeholder="e.g., 85%%">
+</div>
+<div class="form-group">
+  <label for="Course5Name">Course:</label>
+  <input type="text" id="Course5Name" name="Course5Name" placeholder="Course Name" required>
+  <input type="text" id="Course5Grade" name="Course5Grade" placeholder="e.g., 85%%">
+</div>
+<div class="form-group">
+  <label for="Course6Name">Course:</label>
+  <input type="text" id="Course6Name" name="Course6Name" placeholder="Course Name" required>
+  <input type="text" id="Course6Grade" name="Course6Grade" placeholder="e.g., 85%%">
+</div>
+              </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Find My Universities</button>
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+    </body>
+    </html>
