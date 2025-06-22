@@ -1,3 +1,7 @@
+function showScreen(page) {
+  window.location.replace(page);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("studentForm");
   if (!form) return;
