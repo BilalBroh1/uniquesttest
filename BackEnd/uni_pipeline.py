@@ -1,7 +1,7 @@
 import json
 import sys
 from uni_list import ask_gpt_eligibility
-from uni_pros_cons import summarize_to_pros_cons
+from uni_pros_cons import fetch_reddit_posts, summarize_to_pros_cons
 
 def main():
     if len(sys.argv) != 3:
@@ -29,7 +29,8 @@ def main():
         prog     = entry.get("program")
 
         try:
-            details = summarize_to_pros_cons(uni_name)
+            reddit_text = fetch_reddit_posts(uni_name)
+            details = summarize_to_pros_cons(uni_name, reddit_text)
         except Exception as e:
             details = {"error": f"Failed to summarize: {e}"}
 
