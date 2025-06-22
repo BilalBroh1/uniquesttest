@@ -46,29 +46,32 @@
       }
 
       results.forEach(entry => {
-        const tuition = entry.details.tuition || "N/A";
-        const scholarships = entry.details.scholarships || "N/A";
+        const info = entry.details || {};
+        const tuition = info.tuition || "N/A";
+        const scholarships = info.scholarships || info.scholorships || "N/A";
+        const pros = info.pros || [];
+        const cons = info.cons || [];
 
         const card = document.createElement("div");
         card.className = "university-card";
-        card.innerHTML = \`
+        card.innerHTML = `
           <div class="university-header">
-            <div class="university-logo">\${entry.university[0]}</div>
+            <div class="university-logo">${entry.university[0]}</div>
             <div class="university-info">
-              <h3>\${entry.university}</h3>
-              <p>\${entry.program} (Cutoff: \${entry.estimated_cutoff}%)</p>
+              <h3>${entry.university}</h3>
+              <p>${entry.program} (Cutoff: ${entry.estimated_cutoff}%)</p>
             </div>
           </div>
-          <div class="details-section tuition-info"><strong>Tuition:</strong> \${tuition}</div>
-          <div class="details-section"><strong>Scholarships:</strong> \${scholarships}</div>
+          <div class="details-section tuition-info"><strong>Tuition:</strong> ${tuition}</div>
+          <div class="details-section"><strong>Scholarships:</strong> ${scholarships}</div>
           <div class="pros-cons">
-            <div class="pros"><h5>Pros</h5><ul>\${
-              (entry.details.pros || []).map(p => `<li>\${p.point}</li>`).join("")
+            <div class="pros"><h5>Pros</h5><ul>${
+              pros.map(p => `<li>${p.point || p}</li>`).join("")
             }</ul></div>
-            <div class="cons"><h5>Cons</h5><ul>\${
-              (entry.details.cons || []).map(c => `<li>\${c.point}</li>`).join("")
+            <div class="cons"><h5>Cons</h5><ul>${
+              cons.map(c => `<li>${c.point || c}</li>`).join("")
             }</ul></div>
-          </div>\`;
+          </div>`;
         container.appendChild(card);
       });
     });
