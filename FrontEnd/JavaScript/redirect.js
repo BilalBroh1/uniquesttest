@@ -18,27 +18,26 @@ document.addEventListener("DOMContentLoaded", () => {
     const cleanGrades = grades.map(g => parseFloat(g) || 0);
     const average = Math.round(cleanGrades.reduce((a, b) => a + b, 0) / cleanGrades.length);
 
-    try {
-      const res = await fetch("http://localhost:5000/run", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ program, average })
+    const results = [];
+    sampleData.forEach(u => {
+      u.programs.forEach(p => {
+        if (p.name.toLowerCase().includes(program.toLowerCase()) && average >= p.minGrade) {
+          results.push({
+            university: u.name,
+            program: p.name,
+            estimated_cutoff: p.minGrade,
+            details: {
+              tuition: p.tuition,
+              scholarships: p.scholarships,
+              pros: p.pros.map(pt => ({ point: pt })),
+              cons: p.cons.map(pt => ({ point: pt }))
+            }
+          });
+        }
       });
+    });
 
-      const data = await res.json();
-      console.log("RAW response from Flask:", data);
-
-      if (data.error) {
-        alert("Error: " + data.error);
-      } else if (data.output) {
-        localStorage.setItem("uniResults", data.output);
-        window.location.replace("Results.html");
-      } else {
-        alert("Unexpected error. No data returned.");
-      }
-    } catch (err) {
-      console.error("Fetch error:", err);
-      alert("Could not contact server.");
-    }
+    localStorage.setItem("uniResults", JSON.stringify({ results }));
+    window.location.replace("Results.html");
   });
 });

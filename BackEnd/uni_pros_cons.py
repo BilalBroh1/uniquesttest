@@ -1,20 +1,31 @@
 # uni_summary.py
 
-import requests, os, json
-from dotenv import load_dotenv
-from openai import OpenAI
+try:
+    import requests
+except ImportError:
+    requests = None
+import os
+import json
+try:
+    from dotenv import load_dotenv
+except ImportError:
+    def load_dotenv():
+        pass
+try:
+    from openai import OpenAI
+except ImportError:  # openai package not installed
+    OpenAI = None
+from sample_data import get_program_data
 
 load_dotenv()
 key_pros = os.getenv("OPENAI_API_KEY_pros")    # ← grab the *other* key
-if not key_pros:
-    raise RuntimeError("OPENAI_API_KEY_pros not set")
-
-client = OpenAI(api_key=key_pros)              # ← remove hard-coded key!
+client = OpenAI(api_key=key_pros) if key_pros else None
 
 def fetch_reddit_posts(university_name, limit=10):
-    headers = {
-        "User-Agent": "Mozilla/5.0"
-    }
+    if not client or not requests:
+        return ""
+
+    headers = {"User-Agent": "Mozilla/5.0"}
     query = university_name.replace(" ", "+")
     url = f"https://www.reddit.com/search.json?q={query}&sort=top&limit={limit}"
 
@@ -24,17 +35,15 @@ def fetch_reddit_posts(university_name, limit=10):
 
     posts = response.json()["data"]["children"]
     combined_text = ""
-
     for post in posts:
         title = post["data"].get("title", "")
         body = post["data"].get("selftext", "")
         if len(body.strip()) < 40:
-            continue  # skip short or empty posts
+            continue
         combined_text += f"TITLE: {title}\nPOST: {body}\n---\n"
-
     return combined_text.strip()
 
-def summarize_to_pros_cons(university_name, reddit_text):
+def summarize_to_pros_cons(university_name, reddit_text, program_name=None):
     prompt = f"""
 You are an assistant that helps summarize student opinions on universities.
 
@@ -55,21 +64,31 @@ in the following JSON format:
 --- END POSTS ---
 """
 
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",  # or "gpt-4o"
-        messages=[{"role": "user", "content": prompt}],
-        temperature=0.3,
-        max_tokens=600
-    )
+    if client:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",  # or "gpt-4o"
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.3,
+            max_tokens=600
+        )
 
-    reply = response.choices[0].message.content.strip()
-
-    try:
-        return json.loads(reply)
-    except json.JSONDecodeError:
-        print("❌ GPT response was not valid JSON. Raw output:")
-        print(reply)
-        return None
+        reply = response.choices[0].message.content.strip()
+        try:
+            return json.loads(reply)
+        except json.JSONDecodeError:
+            print("❌ GPT response was not valid JSON. Raw output:")
+            print(reply)
+            return None
+    else:
+        data = get_program_data(university_name, program_name or "")
+        if not data:
+            return None
+        return {
+            "pros": [{"point": p} for p in data.get("pros", [])],
+            "cons": [{"point": c} for c in data.get("cons", [])],
+            "tuition": data.get("tuition"),
+            "scholarships": data.get("scholarships")
+        }
 
 def main():
     uni = input("Enter the name of the university: ")

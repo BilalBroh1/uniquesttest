@@ -1,13 +1,19 @@
-from openai import OpenAI
+try:
+    from openai import OpenAI
+except ImportError:  # openai package not installed
+    OpenAI = None
 import os
-from dotenv import load_dotenv
+import json
+try:
+    from dotenv import load_dotenv
+except ImportError:  # python-dotenv not installed
+    def load_dotenv():
+        pass
+from sample_data import filter_programs
 
 load_dotenv()
 key_list = os.getenv("OPENAI_API_KEY_list")
-if not key_list:
-    raise RuntimeError("OPENAI_API_KEY_list not set")
-
-client = OpenAI(api_key=key_list)
+client = OpenAI(api_key=key_list) if key_list else None
 
 def ask_gpt_eligibility(program: str, average: int) -> str:
     prompt = f"""
@@ -21,10 +27,14 @@ Respond ONLY in JSON with this format:
   ]
 }}
 """
-    chat = client.chat.completions.create(
-        model="gpt-4o",
-        temperature=0.4,
-        messages=[{"role": "user", "content": prompt}],
-        max_tokens=700,
-    )
-    return chat.choices[0].message.content.strip()
+    if client:
+        chat = client.chat.completions.create(
+            model="gpt-4o",
+            temperature=0.4,
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=700,
+        )
+        return chat.choices[0].message.content.strip()
+    else:
+        eligible_list = filter_programs(program, average)
+        return json.dumps({"eligible_programs": eligible_list})
