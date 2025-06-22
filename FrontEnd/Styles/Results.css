@@ -158,3 +158,22 @@
 .back-btn:hover {
     background: rgba(255,255,255,0.3);
 }
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.detail-box {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.detail-box h4 {
+    margin-bottom: 8px;
+    color: #333;
+    font-size: 16px;
+}

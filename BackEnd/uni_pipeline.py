@@ -30,7 +30,7 @@ def main():
 
         try:
             reddit_text = fetch_reddit_posts(uni_name)
-            details = summarize_to_pros_cons(uni_name, reddit_text)
+            details = summarize_to_pros_cons(uni_name, reddit_text, prog)
         except Exception as e:
             details = {"error": f"Failed to summarize: {e}"}
 

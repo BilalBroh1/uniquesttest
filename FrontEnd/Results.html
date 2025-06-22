@@ -45,32 +45,49 @@
         return;
       }
 
-      results.forEach(entry => {
-        const tuition = entry.details.tuition || "N/A";
-        const scholarships = entry.details.scholarships || "N/A";
+        results.forEach(entry => {
+          const tuition = entry.details.tuition || "N/A";
+          const scholarships = entry.details.scholarships || [];
 
-        const card = document.createElement("div");
-        card.className = "university-card";
-        card.innerHTML = \`
-          <div class="university-header">
-            <div class="university-logo">\${entry.university[0]}</div>
-            <div class="university-info">
-              <h3>\${entry.university}</h3>
-              <p>\${entry.program} (Cutoff: \${entry.estimated_cutoff}%)</p>
+          const card = document.createElement("div");
+          card.className = "university-card";
+
+          const scholarshipList = Array.isArray(scholarships)
+            ? scholarships.map(s => `<li>${s}</li>`).join("")
+            : `<li>${scholarships}</li>`;
+
+          card.innerHTML = \`
+            <div class="university-header">
+              <div class="university-logo">\${entry.university[0]}</div>
+              <div class="university-info">
+                <h3>\${entry.university}</h3>
+                <p>\${entry.program} (Cutoff: \${entry.estimated_cutoff}%)</p>
+              </div>
             </div>
-          </div>
-          <div class="details-section tuition-info"><strong>Tuition:</strong> \${tuition}</div>
-          <div class="details-section"><strong>Scholarships:</strong> \${scholarships}</div>
-          <div class="pros-cons">
-            <div class="pros"><h5>Pros</h5><ul>\${
-              (entry.details.pros || []).map(p => `<li>\${p.point}</li>`).join("")
-            }</ul></div>
-            <div class="cons"><h5>Cons</h5><ul>\${
-              (entry.details.cons || []).map(c => `<li>\${c.point}</li>`).join("")
-            }</ul></div>
-          </div>\`;
-        container.appendChild(card);
-      });
+            <div class="detail-grid">
+              <div class="detail-box">
+                <h4>Tuition</h4>
+                <p>\${tuition}</p>
+              </div>
+              <div class="detail-box">
+                <h4>Scholarships</h4>
+                <ul>\${scholarshipList}</ul>
+              </div>
+              <div class="detail-box">
+                <h4>Pros</h4>
+                <ul>\${
+                  (entry.details.pros || []).map(p => `<li>\${p.point}</li>`).join("")
+                }</ul>
+              </div>
+              <div class="detail-box">
+                <h4>Cons</h4>
+                <ul>\${
+                  (entry.details.cons || []).map(c => `<li>\${c.point}</li>`).join("")
+                }</ul>
+              </div>
+            </div>\`;
+          container.appendChild(card);
+        });
     });
   </script>
 </body>
